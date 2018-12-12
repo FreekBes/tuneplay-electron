@@ -1,0 +1,26 @@
+{
+  "name": "tuneplay",
+  "version": "0.0.1",
+  "description": "Listen to your favorite music using TunePlay, a music player where everyone contributes to delivering content",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [
+    "music",
+    "tuneplay",
+    "app",
+    "program",
+    "electron",
+    "spotify",
+    "youtube",
+    "soundcloud",
+    "mixcloud"
+  ],
+  "author": "Freek Bes",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^3.0.11",
+    "jquery": "^3.3.1"
+  }
+}

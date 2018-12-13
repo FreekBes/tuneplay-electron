@@ -1,7 +1,9 @@
 const electron = require('electron');
+const {autoUpdater} = require("electron-updater");
 
 const dialog = electron.dialog;
 const app = electron.app;
+const ipcMain = electron.ipcMain;
 const BrowserWindow = electron.BrowserWindow;
 
 let mainWindow;
@@ -252,4 +254,18 @@ app.on('ready', function() {
     mainWindow.webContents.on('did-navigate', function(event, url, httpResponseCode, httpStatusText) {
         
     });
+
+    mainWindow.on('closed', function(event) {
+        app.quit();
+    });
+
+    autoUpdater.checkForUpdates();
 });
+
+autoUpdater.on('update-downloaded', function(info) {
+    mainWindow.webContents.send('updateReady')
+});
+
+ipcMain.on("quitAndInstall", function(event, arg) {
+    autoUpdater.quitAndInstall();
+})

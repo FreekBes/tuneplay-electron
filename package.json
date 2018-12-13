@@ -4,8 +4,11 @@
   "description": "Listen to your favorite music using TunePlay, a music player where everyone contributes to delivering content",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build": "build --win",
+    "ship": "build --win -p always"
   },
+  "repository": "https://github.com/FreekBes/tuneplay-electron",
   "keywords": [
     "music",
     "tuneplay",
@@ -21,10 +24,14 @@
   "license": "ISC",
   "dependencies": {
     "electron": "^3.0.11",
+    "electron-updater": "^4.0.6",
     "jquery": "^3.3.1"
   },
   "engines": {
     "node": "8.9.1",
     "npm": "5.5.1"
+  },
+  "devDependencies": {
+    "electron-builder": "^20.38.3"
   }
 }

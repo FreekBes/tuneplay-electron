@@ -45,7 +45,8 @@ app.on('ready', function() {
             defaultFontFamily: 'sansSerif',
             defaultFontSize: 15,
             nativeWindowOpen: true
-        }
+        },
+        icon: __dirname + "/tuneplay.ico"
     });
 
     mainWindowId = mainWindow.id;

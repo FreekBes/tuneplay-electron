@@ -96,7 +96,9 @@ app.on('ready', function() {
         newBrowserWindow.setMenu(null);
         if (googleWindow) {
             mainWindow.setFocusable(false);
+            mainWindow.setEnabled(false);
             newBrowserWindow.on('closed', function(event) {
+                mainWindow.setEnabled(true);
                 mainWindow.setFocusable(true);
                 mainWindow.focus();
                 mainWindow.show();

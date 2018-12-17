@@ -1,8 +1,11 @@
 {
   "name": "tuneplay",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Listen to your favorite music using TunePlay, a music player where everyone contributes to delivering content",
   "main": "main.js",
+  "build": {
+    "appId": "net.tuneplay.windows"
+  },
   "scripts": {
     "start": "electron .",
     "build": "build --win",
@@ -24,7 +27,11 @@
   "license": "ISC",
   "dependencies": {
     "discord-rpc": "^3.0.1",
+    "electron-dl": "^1.12.0",
+    "electron-progressbar": "^1.1.0",
+    "fetch-json": "^2.2.1",
     "jquery": "^3.3.1",
+    "prettysize": "^2.0.0",
     "register-scheme": "0.0.2"
   },
   "engines": {

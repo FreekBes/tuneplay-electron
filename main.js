@@ -1,4 +1,9 @@
-const { app, BrowserWindow, dialog } = require('electron');
+const { app, BrowserWindow, dialog, shell } = require('electron');
+const ProgressBar = require('electron-progressbar');
+const fetchJson = require('fetch-json');
+const { download } = require('electron-dl');
+const prettySize = require('prettysize');
+const fs = require('fs');
 const DiscordRPC = require('discord-rpc');
 const discordClientID = '436830433880178689';
 // const discord = require('discord-rich-presence')(discordClientID);
@@ -7,6 +12,7 @@ let mainWindow;
 let mainWindowId;
 let currentThemeColor = "#FFCB2E";
 let currentThemeFontColor = "#000000";
+let progressBar;
 
 function urlIsIndex(url) {
     if (url.indexOf(".tuneplay.net/?") > -1 || url.indexOf(".tuneplay.net/index.php?") > -1 || url.slice(-14) == ".tuneplay.net/" || url.slice(-13) == ".tuneplay.net") {
@@ -26,6 +32,132 @@ function isDarkColor(hexcolor){
 
 // Listen for app to be ready
 app.on('ready', function() {
+    checkForUpdates();
+});
+
+function checkForUpdates() {
+    progressBar = new ProgressBar({
+        title: 'TunePlay',
+        text: 'Checking for updates...',
+        detail: 'Fetching update logs...',
+        indeterminate: true,
+    });
+
+    console.log("Checking for updates...");
+    const updateLogUrl = 'https://www.tuneplay.net/appversion-windows.json';
+    fetchJson.get(updateLogUrl).then(handleUpdateLog);
+}
+
+function handleUpdateLog(data) {
+    if (Object.keys(data).length > 0) {
+        if (data["latest_name_version"] != undefined && data["latest_name_version"] != null) {
+            progressBar.detail = 'Reading update logs...';
+            if (app.getVersion() != data["latest_name_version"]) {
+                progressBar.text = 'An update is available!';
+                console.log("An update is available!");
+                if (fs.existsSync(__dirname + "/tuneplay-updater.exe")) {
+                    progressBar.detail = 'Deleting old updater... This could take a minute or two.';
+                    console.log("Deleting old updater... This could take a minute or two.");
+                    fs.unlink(__dirname + "/tuneplay-updater.exe", function() {
+                        console.log("File deleted!");
+                        progressBar.detail = 'Starting download...';
+                        downloadUpdate();
+                    });
+                }
+                else {
+                    console.log("No old updater to delete.");
+                    progressBar.detail = 'Starting download...';
+                    downloadUpdate();
+                }
+            }
+            else {
+                // no update is available
+                console.log("No update available.");
+                progressBar.text = "Starting TunePlay...";
+                progressBar.detail = "";
+                startTunePlay();
+            }
+        }
+        else {
+            console.log(data);
+            console.warn("latest_app_version is not set!");
+            progressBar.close();
+            dialog.showErrorBox('Update checking error', 'An error occured while checking for updates.\n\nPlease reinstall TunePlay at tuneplay.net/app-download.php.');
+            app.quit();
+        }
+    }
+    else {
+        console.warn("Something happened and the update logs are empty.");
+        progressBar.close();
+        dialog.showErrorBox('Update checking error', 'An error occured while checking for updates.\n\nPlease reinstall TunePlay at tuneplay.net/app-download.php.');
+        app.quit();
+    }
+}
+
+function downloadUpdate() {
+    console.log("Loading new progressbar...");
+    let dlProgressBar = new ProgressBar({
+        title: 'TunePlay',
+        text: 'Downloading update...',
+        detail: 'Starting download...',
+        indeterminate: false,
+        initialValue: 0,
+        maxValue: 100,
+        closeOnComplete: false
+    });
+    progressBar.close();
+    console.log("Starting download...");
+    let downloadItem = null;
+    download(BrowserWindow.getFocusedWindow(), 'https://www.tuneplay.net/downloads/tuneplay.exe', {
+        saveAs: false,
+        directory: __dirname,
+        filename: 'tuneplay-updater.exe',
+        showBadge: false,
+        onStarted: function(dli) {
+            console.log("Download started!");
+            downloadItem = dli;
+        },
+        onProgress: function(progress) {
+            console.log("Downloading update... " + (progress * 100) + "%");
+            dlProgressBar.value = progress * 100;
+            dlProgressBar.detail = prettySize(downloadItem.getReceivedBytes(), true, false, 1).padStart(6, ' ') + " / " + prettySize(downloadItem.getTotalBytes(), true, false, 1).padStart(6, ' ');
+        },
+        onCancel: function() {
+            console.warn("Download canceled!");
+            dlProgressBar.close();
+            dialog.showErrorBox('Update downloading error', 'An error occured while downloading the update. The download was canceled.\n\nPlease reinstall TunePlay at tuneplay.net/app-download.php.');
+            app.quit();
+        }
+    })
+        .then(function(dl) {
+            console.log("Download finished");
+            console.log("Loading new progressbar...");
+            let openProgressBar = new ProgressBar({
+                title: 'TunePlay',
+                text: 'Starting update installer... This might take a while.',
+                detail: 'This window might not respond until the installer has been started.',
+                indeterminate: true
+            });
+            dlProgressBar.close();
+            setTimeout(function() {
+                console.log("Opening updater...");
+                let opened = shell.openItem(__dirname + "/tuneplay-updater.exe");
+                openProgressBar.close();
+                if (!opened) {
+                    dialog.showErrorBox('An error occured', 'Could not open the TunePlay updater.\n\nPlease reinstall TunePlay at tuneplay.net/app-download.php.');
+                }
+                app.quit();
+            }, 500);
+        })
+        .catch(function(error) {
+            console.log(error);
+            dlProgressBar.close();
+            dialog.showErrorBox('Update downloading error', 'An error occured while downloading the update.\n\nPlease reinstall TunePlay at tuneplay.net/app-download.php.');
+            app.quit();
+        });
+}
+
+function startTunePlay() {
     // Create new window with preferences
     mainWindow = new BrowserWindow({
         show: false,
@@ -45,7 +177,7 @@ app.on('ready', function() {
             defaultFontSize: 15,
             nativeWindowOpen: true
         },
-        icon: __dirname + "/tuneplay.ico"
+        icon: __dirname + "/buildResources/icon.ico"
     });
 
     mainWindowId = mainWindow.id;
@@ -56,6 +188,7 @@ app.on('ready', function() {
     mainWindow.once('ready-to-show', function() {
         // when the window is ready, load the main site
         // while loading, loading.php will still be shown
+        progressBar.close();
         mainWindow.maximize();
         mainWindow.show();
         mainWindow.loadURL('https://www.tuneplay.net');
@@ -366,4 +499,4 @@ app.on('ready', function() {
     }
 
     discord.login({ clientId: discordClientID }).catch(console.error);
-});
+}

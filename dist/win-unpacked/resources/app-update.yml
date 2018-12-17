@@ -1,5 +1,4 @@
 owner: FreekBes
 repo: tuneplay-electron
 provider: github
-token: 23a697cb92415fc980978fea476f460f886107fe
 updaterCacheDirName: tuneplay-updater

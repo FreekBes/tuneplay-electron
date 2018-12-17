@@ -1,8 +1,8 @@
-version: 0.0.1
+version: 1.0.0
 files:
-  - url: tuneplay-setup-0.0.1.exe
-    sha512: 4V8bAW9GkM73b4AG3Ap1vmK6p/WTqV5vx0vW3tCiIZ9Ne4Em0qrKgMnM/sqN1ou1RMPnT7vJfe2NGGsQ8sb6AQ==
-    size: 38734307
-path: tuneplay-setup-0.0.1.exe
-sha512: 4V8bAW9GkM73b4AG3Ap1vmK6p/WTqV5vx0vW3tCiIZ9Ne4Em0qrKgMnM/sqN1ou1RMPnT7vJfe2NGGsQ8sb6AQ==
-releaseDate: '2018-12-13T03:50:57.644Z'
+  - url: tuneplay-setup-1.0.0.exe
+    sha512: qkSkpRb+EvIwTObJCjDhDLtufYGX0xr09EVtbb3WXe5MJY0gxcU7tKZ5FyHcOcr/deB8TRePokdKrOc/lmSV4w==
+    size: 38551224
+path: tuneplay-setup-1.0.0.exe
+sha512: qkSkpRb+EvIwTObJCjDhDLtufYGX0xr09EVtbb3WXe5MJY0gxcU7tKZ5FyHcOcr/deB8TRePokdKrOc/lmSV4w==
+releaseDate: '2018-12-17T18:36:10.502Z'

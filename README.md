@@ -5,4 +5,4 @@ The official TunePlay desktop application. Signing in often doesn't work yet, bu
 
 ## Download
 
-[Download for Windows](https://github.com/FreekBes/tuneplay-electron/raw/master/dist/tuneplay%20Setup%200.0.1.exe)
+[Download for Windows](https://github.com/FreekBes/tuneplay-electron/raw/master/dist/tuneplay%20Setup%201.0.0.exe)

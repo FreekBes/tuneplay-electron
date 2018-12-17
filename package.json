@@ -1,6 +1,6 @@
 {
   "name": "tuneplay",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Listen to your favorite music using TunePlay, a music player where everyone contributes to delivering content",
   "main": "main.js",
   "scripts": {
@@ -24,7 +24,8 @@
   "license": "ISC",
   "dependencies": {
     "discord-rpc": "^3.0.1",
-    "jquery": "^3.3.1"
+    "jquery": "^3.3.1",
+    "register-scheme": "0.0.2"
   },
   "engines": {
     "node": "8.9.1",

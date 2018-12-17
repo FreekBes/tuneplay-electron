@@ -1,5 +1,4 @@
 const electron = require('electron');
-const {autoUpdater} = require("electron-updater");
 
 const dialog = electron.dialog;
 const app = electron.app;
@@ -260,14 +259,4 @@ app.on('ready', function() {
     mainWindow.on('closed', function(event) {
         app.quit();
     });
-
-    autoUpdater.checkForUpdates();
 });
-
-autoUpdater.on('update-downloaded', function(info) {
-    mainWindow.webContents.send('updateReady')
-});
-
-ipcMain.on("quitAndInstall", function(event, arg) {
-    autoUpdater.quitAndInstall();
-})

@@ -1,9 +1,7 @@
-const electron = require('electron');
-
-const dialog = electron.dialog;
-const app = electron.app;
-const ipcMain = electron.ipcMain;
-const BrowserWindow = electron.BrowserWindow;
+const { app, BrowserWindow, dialog } = require('electron');
+const DiscordRPC = require('discord-rpc');
+const discordClientID = '436830433880178689';
+// const discord = require('discord-rich-presence')(discordClientID);
 
 let mainWindow;
 let mainWindowId;
@@ -110,9 +108,15 @@ app.on('ready', function() {
         event.newGuest = newBrowserWindow;
     });
 
+    let discordInterval = null;
     mainWindow.webContents.on('dom-ready', function(event) {
         if (!urlIsIndex(mainWindow.webContents.getURL())) {
+            console.log("Opened random page");
             mainWindow.setMinimumSize(500, 500);
+            if (discordInterval != null) {
+                clearInterval(discordInterval);
+                discordInterval = null;
+            }
 
             mainWindow.webContents.executeJavaScript(`
                 let winStyling = document.createElement('style');
@@ -197,7 +201,13 @@ app.on('ready', function() {
             `);
         }
         else {
+            console.log("Opened TunePlay player / index!");
             mainWindow.setMinimumSize(1256, 500);
+            if (discordInterval == null) {
+                console.log("Setting up discordInterval...");
+                discordInterval = setInterval(updateDiscordRPC, 5000);
+            }
+            updateDiscordRPC();
         }
     });
 
@@ -259,4 +269,101 @@ app.on('ready', function() {
     mainWindow.on('closed', function(event) {
         app.quit();
     });
+
+    DiscordRPC.register(discordClientID);
+
+    const discord = new DiscordRPC.Client({ transport: 'ipc' });
+    let discordReady = false;
+
+    discord.on('ready', function() {
+        console.log('Discord RPC is ready!');
+        discordReady = true;
+    });
+
+    function updateDiscordRPC() {
+        if (urlIsIndex(mainWindow.getURL()) && discordReady) {
+            // console.log("Fetching TunePlay playing details...");
+            mainWindow.webContents.executeJavaScript(`JSON.stringify({
+                currentTrack: player.currentTrack,
+                playing: player.isPlaying,
+                duration: player.getDuration(),
+                currentTime: player.getCurrentTime(),
+                type: player.type
+            })`, false).then(function(result) {
+                // console.log(result);
+                setDiscordRPC(result);
+            }).catch(function(error) {
+                console.error(error);
+            });
+        }
+        else {
+            // console.log('Not index or discord not ready');
+        }
+    }
+
+    function setDiscordRPC(tpInfo) {
+        if (discordReady) {
+            tpInfo = JSON.parse(tpInfo);
+            if (tpInfo.currentTrack != null && Object.keys(tpInfo.currentTrack).length > 0) {
+                let status = "playing";
+                let startTimestamp = null;
+                if (tpInfo.playing === true) {
+                    startTimestamp = Math.floor(new Date().getTime() * 0.001) - tpInfo.currentTime;
+                }
+                else {
+                    startTimestamp = 0;
+                    status = "paused";
+                }
+                let details = tpInfo.currentTrack['title'];
+                let state = tpInfo.currentTrack['artists_text'];
+                let smallImgKey = null;
+                let smallImgTxt = null;
+                switch(tpInfo.type) {
+                    case "tp":
+                        smallImgKey = 'tp_icon';
+                        smallImgTxt = 'Currently ' + status + ' ' + tpInfo.currentTrack['type_text'].toLowerCase() + ' via TunePlay';
+                        break;
+                    case "yt":
+                        smallImgKey = 'yt_icon';
+                        smallImgTxt = 'Currently ' + status + ' ' + tpInfo.currentTrack['type_text'].toLowerCase() + ' via YouTube';
+                        break;
+                    case "sc":
+                        smallImgKey = 'sc_icon';
+                        smallImgTxt = 'Currently ' + status + ' ' + tpInfo.currentTrack['type_text'].toLowerCase() + ' via Soundcloud';
+                        break;
+                    case "sp":
+                        smallImgKey = 'sp_icon';
+                        smallImgTxt = 'Currently ' + status + ' ' + tpInfo.currentTrack['type_text'].toLowerCase() + ' via Spotify';
+                        break;
+                    case "mc":
+                        smallImgKey = 'mc_icon';
+                        smallImgTxt = 'Currently ' + status + ' ' + tpInfo.currentTrack['type_text'].toLowerCase() + ' via Mixcloud';
+                        break;
+                    default:
+                        smallImgKey = 'tp_icon';
+                        smallImgTxt = 'Currently ' + status + ' ' + tpInfo.currentTrack['type_text'].toLowerCase();
+                        break;
+                }
+                // console.log('Updating discord RPC to the right track');
+                discord.setActivity({
+                    details: details,
+                    state: state,
+                    largeImageKey: 'logo_square',
+                    largeImageText: 'Sadly we cannot show cover art here due to the limitations of the Discord RPC API',
+                    smallImageKey: smallImgKey,
+                    smallImageText: smallImgTxt
+                });
+            }
+            else {
+                // console.log('Updating discord RPC to not playing any track');
+                discord.setActivity({
+                    details: 'Not playing any track',
+                    state: 'Not playing any track',
+                    largeImageKey: 'logo_square'
+                });
+            }
+        }
+    }
+
+    discord.login({ clientId: discordClientID }).catch(console.error);
 });

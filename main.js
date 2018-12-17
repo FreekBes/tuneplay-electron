@@ -55,10 +55,10 @@ function handleUpdateLog(data) {
             if (app.getVersion() != data["latest_name_version"]) {
                 progressBar.text = 'An update is available!';
                 console.log("An update is available!");
-                if (fs.existsSync(__dirname + "/tuneplay-updater.exe")) {
+                if (fs.existsSync(app.getPath('temp') + "/tuneplay-updater.exe")) {
                     progressBar.detail = 'Deleting old updater... This could take a minute or two.';
                     console.log("Deleting old updater... This could take a minute or two.");
-                    fs.unlink(__dirname + "/tuneplay-updater.exe", function() {
+                    fs.unlink(app.getPath('temp') + "/tuneplay-updater.exe", function() {
                         console.log("File deleted!");
                         progressBar.detail = 'Starting download...';
                         downloadUpdate();
@@ -107,10 +107,11 @@ function downloadUpdate() {
     });
     progressBar.close();
     console.log("Starting download...");
+    console.log("Location: " + app.getPath('temp'));
     let downloadItem = null;
     download(BrowserWindow.getFocusedWindow(), 'https://www.tuneplay.net/downloads/tuneplay.exe', {
         saveAs: false,
-        directory: __dirname,
+        directory: app.getPath('temp'),
         filename: 'tuneplay-updater.exe',
         showBadge: false,
         onStarted: function(dli) {
@@ -141,7 +142,7 @@ function downloadUpdate() {
             dlProgressBar.close();
             setTimeout(function() {
                 console.log("Opening updater...");
-                let opened = shell.openItem(__dirname + "/tuneplay-updater.exe");
+                let opened = shell.openItem(app.getPath('temp') + "/tuneplay-updater.exe");
                 openProgressBar.close();
                 if (!opened) {
                     dialog.showErrorBox('An error occured', 'Could not open the TunePlay updater.\n\nPlease reinstall TunePlay at tuneplay.net/app-download.php.');

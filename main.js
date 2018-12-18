@@ -14,6 +14,9 @@ let currentThemeColor = "#FFCB2E";
 let currentThemeFontColor = "#000000";
 let progressBar;
 
+app.commandLine.appendSwitch('widevine-cdm-path', __dirname + '/build/widevinecdm.dll');
+app.commandLine.appendSwitch('widevine-cdm-version', '1.4.8.885');
+
 function urlIsIndex(url) {
     if (url.indexOf(".tuneplay.net/?") > -1 || url.indexOf(".tuneplay.net/index.php?") > -1 || url.slice(-14) == ".tuneplay.net/" || url.slice(-13) == ".tuneplay.net") {
         return true;
@@ -32,6 +35,11 @@ function isDarkColor(hexcolor){
 
 // Listen for app to be ready
 app.on('ready', function() {
+    console.log('App is ready!');
+    console.log('Node v' + process.versions.node);
+    console.log('Electron v' + process.versions.electron);
+    console.log('Chrome v' + process.versions.chrome);
+    console.log('TunePlay Desktop v' + app.getVersion());
     checkForUpdates();
 });
 
@@ -109,7 +117,7 @@ function downloadUpdate() {
     console.log("Starting download...");
     console.log("Location: " + app.getPath('temp'));
     let downloadItem = null;
-    download(BrowserWindow.getFocusedWindow(), 'https://www.tuneplay.net/downloads/tuneplay.exe', {
+    download(BrowserWindow.getFocusedWindow(), 'https://github.com/FreekBes/tuneplay-electron/raw/master/dist/tuneplay-latest.exe', {
         saveAs: false,
         directory: app.getPath('temp'),
         filename: 'tuneplay-updater.exe',
@@ -193,7 +201,7 @@ function startTunePlay() {
         mainWindow.maximize();
         mainWindow.show();
         mainWindow.loadURL('https://www.tuneplay.net');
-        // mainWindow.webContents.openDevTools();
+        mainWindow.webContents.openDevTools();
     });
 
     mainWindow.webContents.on('new-window', function(event, url, frameName, disposition, options, additionalFeatures, referrer) {
@@ -339,7 +347,7 @@ function startTunePlay() {
             mainWindow.setMinimumSize(1256, 500);
             if (discordInterval == null) {
                 console.log("Setting up discordInterval...");
-                discordInterval = setInterval(updateDiscordRPC, 5000);
+                discordInterval = setInterval(updateDiscordRPC, 1500);
             }
             updateDiscordRPC();
         }
@@ -401,6 +409,7 @@ function startTunePlay() {
     });
 
     mainWindow.on('closed', function(event) {
+        discord.destroy();
         app.quit();
     });
 
@@ -420,8 +429,8 @@ function startTunePlay() {
             mainWindow.webContents.executeJavaScript(`JSON.stringify({
                 currentTrack: player.currentTrack,
                 playing: player.isPlaying,
-                duration: player.getDuration(),
-                currentTime: player.getCurrentTime(),
+                duration: Math.floor(player.getDuration()),
+                currentTime: Math.floor(player.getCurrentTime()),
                 type: player.type
             })`, false).then(function(result) {
                 // console.log(result);
@@ -485,13 +494,13 @@ function startTunePlay() {
                     largeImageKey: 'logo_square',
                     largeImageText: 'Sadly we cannot show cover art here due to the limitations of the Discord RPC API',
                     smallImageKey: smallImgKey,
-                    smallImageText: smallImgTxt
+                    smallImageText: smallImgTxt,
+                    startTimestamp: startTimestamp
                 });
             }
             else {
                 // console.log('Updating discord RPC to not playing any track');
                 discord.setActivity({
-                    details: 'Not playing any track',
                     state: 'Not playing any track',
                     largeImageKey: 'logo_square'
                 });
@@ -499,5 +508,7 @@ function startTunePlay() {
         }
     }
 
-    discord.login({ clientId: discordClientID }).catch(console.error);
+    discord.login({ clientId: discordClientID }).then(function() {
+        console.log('Logged in to Discord!');
+    }).catch(console.error);
 }

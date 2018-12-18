@@ -347,7 +347,7 @@ function startTunePlay() {
             mainWindow.setMinimumSize(1256, 500);
             if (discordInterval == null) {
                 console.log("Setting up discordInterval...");
-                discordInterval = setInterval(updateDiscordRPC, 1500);
+                discordInterval = setInterval(updateDiscordRPC, 2000);
             }
             updateDiscordRPC();
         }

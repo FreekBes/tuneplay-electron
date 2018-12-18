@@ -9,4 +9,9 @@ Some antivirus programs don't really like this program, because it isn't officia
 
 ## Download
 
-[Download from GitHub](https://github.com/FreekBes/tuneplay-electron/raw/master/dist/tuneplay-latest.exe)
+* [View download page](https://www.tuneplay.net/app-download.php?v=windows)
+* [Download directly from GitHub](https://github.com/FreekBes/tuneplay-electron/raw/master/dist/tuneplay-latest.exe)
+
+## Changelog
+
+[View changelog](https://www.tuneplay.net/app-download.php?v=windows&update=0.0.1)

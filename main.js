@@ -201,7 +201,7 @@ function startTunePlay() {
         mainWindow.maximize();
         mainWindow.show();
         mainWindow.loadURL('https://www.tuneplay.net');
-        mainWindow.webContents.openDevTools();
+        // mainWindow.webContents.openDevTools();
     });
 
     mainWindow.webContents.on('new-window', function(event, url, frameName, disposition, options, additionalFeatures, referrer) {

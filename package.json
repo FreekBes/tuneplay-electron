@@ -1,10 +1,15 @@
 {
   "name": "tuneplay",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Listen to your favorite music using TunePlay, a music player where everyone contributes to delivering content",
+  "homepage": "https://www.tuneplay.net/",
   "main": "main.js",
   "build": {
-    "appId": "net.tuneplay.windows"
+    "appId": "net.tuneplay.windows",
+    "productName": "TunePlay",
+    "extraFiles": [
+      "liq"
+    ]
   },
   "scripts": {
     "start": "electron .",

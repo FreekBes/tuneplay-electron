@@ -182,7 +182,7 @@ function startTunePlay() {
         vibrancy: "dark",
         titleBarStyle: 'hiddenInset',
         webPreferences: {
-            devTools: true,
+            devTools: false,
             defaultFontFamily: 'sansSerif',
             defaultFontSize: 15,
             nativeWindowOpen: true,
@@ -203,7 +203,7 @@ function startTunePlay() {
         mainWindow.maximize();
         mainWindow.show();
         mainWindow.loadURL('https://www.tuneplay.net');
-        mainWindow.webContents.openDevTools();
+        // mainWindow.webContents.openDevTools();
     });
 
     mainWindow.webContents.on('new-window', function(event, url, frameName, disposition, options, additionalFeatures, referrer) {

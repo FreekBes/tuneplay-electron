@@ -1,4 +1,5 @@
 const { app, BrowserWindow, dialog, shell } = require('electron');
+const nodeCmd = require('node-cmd');
 const ProgressBar = require('electron-progressbar');
 const fetchJson = require('fetch-json');
 const { download } = require('electron-dl');
@@ -202,7 +203,7 @@ function startTunePlay() {
         mainWindow.maximize();
         mainWindow.show();
         mainWindow.loadURL('https://www.tuneplay.net');
-        // mainWindow.webContents.openDevTools();
+        mainWindow.webContents.openDevTools();
     });
 
     mainWindow.webContents.on('new-window', function(event, url, frameName, disposition, options, additionalFeatures, referrer) {
@@ -416,11 +417,6 @@ function startTunePlay() {
         
     });
 
-    mainWindow.on('closed', function(event) {
-        discord.destroy();
-        app.quit();
-    });
-
     DiscordRPC.register(discordClientID);
 
     const discord = new DiscordRPC.Client({ transport: 'ipc' });
@@ -519,4 +515,31 @@ function startTunePlay() {
     discord.login({ clientId: discordClientID }).then(function() {
         console.log('Logged in to Discord!');
     }).catch(console.error);
+
+    console.log("Starting liquidsoap...");
+    nodeCmd.get('liq\\liquidsoap.exe liq\\script.liq', function(err, data, stderr) {
+        if (err) {
+            console.error(err);
+        }
+        else {
+            console.log(data);
+        }
+    });
+
+    mainWindow.on('closed', function(event) {
+        console.log("Stopping liquidsoap...");
+        nodeCmd.get('taskkill /IM "liquidsoap.exe" /F', function(err, data, stderr) {
+            if (err) {
+                console.log("Could not stop liquidsoap!");
+                console.error(err);
+            }
+            else {
+                console.log("Liquidsoap has been stopped.");
+            }
+        });
+        console.log("Stopping Discord RPC...");
+        discord.destroy();
+        console.log("Quitting...");
+        app.quit();
+    });
 }

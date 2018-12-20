@@ -31,6 +31,7 @@
     "electron-progressbar": "^1.1.0",
     "fetch-json": "^2.2.1",
     "jquery": "^3.3.1",
+    "node-cmd": "^3.0.0",
     "prettysize": "^2.0.0",
     "register-scheme": "0.0.2"
   },

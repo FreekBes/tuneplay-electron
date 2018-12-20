@@ -184,7 +184,8 @@ function startTunePlay() {
             devTools: true,
             defaultFontFamily: 'sansSerif',
             defaultFontSize: 15,
-            nativeWindowOpen: true
+            nativeWindowOpen: true,
+            experimentalFeatures: true
         },
         icon: __dirname + "/buildResources/icon.ico"
     });
@@ -201,13 +202,16 @@ function startTunePlay() {
         mainWindow.maximize();
         mainWindow.show();
         mainWindow.loadURL('https://www.tuneplay.net');
-        // mainWindow.webContents.openDevTools();
+        mainWindow.webContents.openDevTools();
     });
 
     mainWindow.webContents.on('new-window', function(event, url, frameName, disposition, options, additionalFeatures, referrer) {
         event.preventDefault();
         Object.assign(options, {
-            frame: true
+            frame: true,
+            webPreferences: {
+                nodeIntegration: false
+            }
         });
         let googleWindow = false;
         if (url.indexOf("//accounts.google.com/") > -1) {
@@ -225,7 +229,6 @@ function startTunePlay() {
                 fullscreenable: false,
                 webPreferences: {
                     devTools: false,
-                    nodeIntegration: false,
                     webSecurity: true,
                     safeDialogs: true
                 }
@@ -252,8 +255,9 @@ function startTunePlay() {
 
     let discordInterval = null;
     mainWindow.webContents.on('dom-ready', function(event) {
-        if (!urlIsIndex(mainWindow.webContents.getURL())) {
-            console.log("Opened random page");
+        let thisUrl = mainWindow.webContents.getURL();
+        if (!urlIsIndex(thisUrl)) {
+            console.log("Opened random page: " + thisUrl);
             mainWindow.setMinimumSize(500, 500);
             if (discordInterval != null) {
                 clearInterval(discordInterval);
@@ -261,6 +265,8 @@ function startTunePlay() {
             }
 
             mainWindow.webContents.executeJavaScript(`
+                console.log('Importing title bar from TunePlay Desktop...');
+
                 let winStyling = document.createElement('style');
                 winStyling.innerHTML = 'body { border: solid 1px `+currentThemeColor+`; overflow: hidden; } #electron-titlebar { display: block; z-index: 99999; position: fixed; height: 32px; width: calc(100% - 2px); background: `+currentThemeColor+`; color: `+currentThemeFontColor+`; transition: color 1s, background 1s; padding: 4px; } #electron-titlebar #electron-drag-region { display: grid; grid-template-columns: auto 138px; width: 100%; height: 100%; -webkit-app-region: drag; } #electron-window-title { grid-column: 1; display: flex; align-items: center; font-family: "Segoe UI", sans-serif; font-size: 12px; margin-left: 8px; overflow: hidden; } #electron-window-title span { overflow: hidden; text-overflow: ellipsis; line-height: 1.5; } #electron-window-controls { display: grid; grid-template-columns: repeat(3, 46px); position: absolute; top: 0; right: 6px; height: 100%; font-family: "SEGOE MDl2 Assets"; font-size: 10px; -webkit-app-region: no-drag; } #electron-window-controls .electron-btn { grid-row 1 / span 1; display: flex; width: 46px; text-align: center; justify-content: center; align-items: center; width: 100%; height: 100%; user-select: none; cursor: default; opacity: 0.8; } #electron-window-controls .electron-btn:hover { background: rgba(255,255,255,0.2); opacity: 1; } #electron-window-controls #electron-min-btn { grid-column: 1; } #electron-window-controls #electron-max-btn, #electron-window-controls #electron-restore-btn { grid-column: 2; } #electron-window-controls #electron-close-btn { grid-column: 3; } #electron-window-controls #electron-close-btn:hover { background: #E81123; } #electron-window-controls #electron-restore-btn { display: none; } #electron-main { height: calc(100% - 34px); margin-top: 32px; overflow: auto; }';
                 document.getElementsByTagName("head")[0].appendChild(winStyling);
@@ -340,6 +346,8 @@ function startTunePlay() {
                         body.style.height = "calc(100% - 2px)";
                     }
                 }
+
+                console.log('Title bar imported from TunePlay Desktop.');
             `);
         }
         else {

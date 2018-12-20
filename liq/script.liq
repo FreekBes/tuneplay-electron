@@ -1,7 +1,7 @@
 #!/usr/bin/liquidsoap
 
 # Log dir
-set("log.file.path","C:\Users\Freek\Documents\html\tuneplay\electron\liq\tuneplay-mp.log")
+# set("log.file.path","C:\Users\Freek\Documents\html\tuneplay\electron\liq\tuneplay-mp.log")
 
 # Live DJ stuff
 set("harbor.bind_addr","0.0.0.0")

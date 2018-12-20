@@ -1,0 +1,51 @@
+2018/12/20 18:52:38 >>> LOG START
+2018/12/20 18:52:38 [main:3] Liquidsoap 1.3.4
+2018/12/20 18:52:38 [main:3] Using: bytes=[distributed with OCaml 4.02 or above] pcre=7.3.4 dtools=0.4.0 duppy=0.7.3 cry=0.6.2 mm=0.4.0 ogg=0.5.2 vorbis=0.7.1 opus=0.1.2 speex=0.2.1 mad=0.4.5 flac=0.1.3 flac.ogg=0.1.3 dynlink=[distributed with Ocaml] lame=0.3.3 gstreamer=0.3.0 fdkaac=0.2.1 theora=0.3.1 ao=0.2.1 samplerate=0.1.4 taglib=0.3.5 ssl=@VERSION@ camomile=1.0.1 yojson=1.4.0 faad=0.4.0 portaudio=0.2.1 winsvc=0.1.1
+2018/12/20 18:52:38 [gstreamer.loader:3] Loaded GStreamer 1.14.0 0
+2018/12/20 18:52:38 [lang.deprecated:2] WARNING: "harbor.bind_addr" is deprecated! Please use "harbor.bind_addrs"
+2018/12/20 18:52:38 [frame:3] Using 44100Hz audio, 25Hz video, 44100Hz master.
+2018/12/20 18:52:38 [frame:3] Frame size must be a multiple of 1764 ticks = 1764 audio samples = 1 video samples.
+2018/12/20 18:52:38 [frame:3] Targetting 'frame.duration': 0.04s = 1764 audio samples = 1764 ticks.
+2018/12/20 18:52:38 [frame:3] Frames last 0.04s = 1764 audio samples = 1 video samples = 1764 ticks.
+2018/12/20 18:52:38 [threads:3] Created thread "gstreamer_main_loop" (1 total).
+2018/12/20 18:52:38 [threads:3] Created thread "generic queue #1".
+2018/12/20 18:52:38 [threads:3] Created thread "generic queue #2".
+2018/12/20 18:52:38 [threads:3] Created thread "non-blocking queue #1".
+2018/12/20 18:52:38 [threads:3] Created thread "non-blocking queue #2".
+2018/12/20 18:52:38 [harbor:3] Adding mountpoint '/mount' on port 4002
+2018/12/20 18:52:38 [MULTI-01:3] Connecting mount MULTI-01 for source@tuneplay.net...
+2018/12/20 18:52:38 [MULTI-01:3] Connection setup was successful.
+2018/12/20 18:52:38 [threads:3] Created thread "wallclock_main" (2 total).
+2018/12/20 18:52:38 [clock.wallclock_main:3] Streaming loop starts, synchronized with wallclock.
+2018/12/20 18:52:38 [MULTI-01:3] Source failed (no more tracks) stopping output...
+2018/12/20 18:52:38 [MULTI-01:3] Closing connection...
+2018/12/20 18:53:02 [decoder:3] Method "MAD" accepted "audio/mpeg".
+2018/12/20 18:53:02 [threads:3] Created thread "harbor source feeding" (3 total).
+2018/12/20 18:53:02 [input(dot)harbor_6621:3] Decoding...
+2018/12/20 18:53:04 [MULTI-01:3] Connecting mount MULTI-01 for source@tuneplay.net...
+2018/12/20 18:53:04 [MULTI-01:3] Connection setup was successful.
+2018/12/20 18:53:04 [fallback_6623:3] Switch to input(dot)harbor_6621.
+2018/12/20 19:18:18 [input(dot)harbor_6621:2] Error while reading from client: Harbor.Make(T).Websocket_closed
+2018/12/20 19:18:18 [input(dot)harbor_6621:2] Feeding stopped: Mad.End_of_stream.
+2018/12/20 19:18:18 [threads:3] Thread "harbor source feeding" terminated (2 remaining).
+2018/12/20 19:20:45 >>> LOG START
+2018/12/20 19:20:45 [main:3] Liquidsoap 1.3.4
+2018/12/20 19:20:45 [main:3] Using: bytes=[distributed with OCaml 4.02 or above] pcre=7.3.4 dtools=0.4.0 duppy=0.7.3 cry=0.6.2 mm=0.4.0 ogg=0.5.2 vorbis=0.7.1 opus=0.1.2 speex=0.2.1 mad=0.4.5 flac=0.1.3 flac.ogg=0.1.3 dynlink=[distributed with Ocaml] lame=0.3.3 gstreamer=0.3.0 fdkaac=0.2.1 theora=0.3.1 ao=0.2.1 samplerate=0.1.4 taglib=0.3.5 ssl=@VERSION@ camomile=1.0.1 yojson=1.4.0 faad=0.4.0 portaudio=0.2.1 winsvc=0.1.1
+2018/12/20 19:20:45 [gstreamer.loader:3] Loaded GStreamer 1.14.0 0
+2018/12/20 19:20:45 [lang.deprecated:2] WARNING: "harbor.bind_addr" is deprecated! Please use "harbor.bind_addrs"
+2018/12/20 19:20:45 [frame:3] Using 44100Hz audio, 25Hz video, 44100Hz master.
+2018/12/20 19:20:45 [frame:3] Frame size must be a multiple of 1764 ticks = 1764 audio samples = 1 video samples.
+2018/12/20 19:20:45 [frame:3] Targetting 'frame.duration': 0.04s = 1764 audio samples = 1764 ticks.
+2018/12/20 19:20:45 [frame:3] Frames last 0.04s = 1764 audio samples = 1 video samples = 1764 ticks.
+2018/12/20 19:20:45 [threads:3] Created thread "gstreamer_main_loop" (1 total).
+2018/12/20 19:20:45 [threads:3] Created thread "generic queue #1".
+2018/12/20 19:20:45 [threads:3] Created thread "generic queue #2".
+2018/12/20 19:20:45 [threads:3] Created thread "non-blocking queue #1".
+2018/12/20 19:20:45 [threads:3] Created thread "non-blocking queue #2".
+2018/12/20 19:20:45 [harbor:3] Adding mountpoint '/mount' on port 4002
+2018/12/20 19:20:45 [MULTI-01:3] Connecting mount MULTI-01 for source@tuneplay.net...
+2018/12/20 19:20:45 [MULTI-01:3] Connection setup was successful.
+2018/12/20 19:20:45 [threads:3] Created thread "wallclock_main" (2 total).
+2018/12/20 19:20:45 [clock.wallclock_main:3] Streaming loop starts, synchronized with wallclock.
+2018/12/20 19:20:45 [MULTI-01:3] Source failed (no more tracks) stopping output...
+2018/12/20 19:20:45 [MULTI-01:3] Closing connection...
